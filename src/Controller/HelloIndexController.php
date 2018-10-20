@@ -14,7 +14,8 @@ class HelloIndexController extends AbstractController
     public function index()
     {
         return new Response(
-            '<!DOCTYPE HTML><html><body>Hello</body></html>'
+            '<!DOCTYPE HTML><html><body>Hey</body></html>',
+            418 // I'm a teapod
         );
     }
 }
