@@ -23,3 +23,7 @@ Content-Type: application/json
 ]
 
 ###
+
+POST http://localhost:8000/push/test?key=ynes4uüz9rpawe4h8üj0z4ü0äop9zyeuz
+
+###

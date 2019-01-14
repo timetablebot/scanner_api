@@ -6,6 +6,7 @@ use App\Entity\CafeteriaMeal;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PushController extends AbstractController
@@ -23,7 +24,7 @@ class PushController extends AbstractController
             return $this->json([
                 'message' => 'No key is set!'
             ], 401);
-        } else if ($key !== 'ynes4uüz9rpawe4h8üj0z4ü0äop9zyeuzü') {
+        } else if ($key !== getenv('PUSH_KEY')) {
             return $this->json([
                 'message' => 'Wrong key is set!'
             ], 401);
@@ -102,7 +103,7 @@ class PushController extends AbstractController
             $tracking[$meal->getDay()] = [];
         }
 
-        $veg = $meal->getVegetarian() ? 'vegetarian' : 'meat_eater';
+        $veg = $meal->getVegetarian() ? 'vegetarian' : 'meat';
 
         $tracking[$meal->getDay()][$veg] = $created;
     }
@@ -116,5 +117,20 @@ class PushController extends AbstractController
                 'invalid' => $invalidJson
             ]
         ], 400);
+    }
+
+    /**
+     * @Route("/push/test", methods={"POST"})
+     * @param Request $request
+     * @return Response
+     */
+    public function test(Request $request) {
+        $key = $request->query->get('key');
+
+        if ($key == getenv('PUSH_KEY')) {
+            return new Response('', Response::HTTP_OK);
+        } else {
+            return new Response('', Response::HTTP_UNAUTHORIZED);
+        }
     }
 }
