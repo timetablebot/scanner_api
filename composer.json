@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "symfony/console": "*",
+        "symfony/dotenv": "*",
         "symfony/flex": "^1.2",
         "symfony/framework-bundle": "*",
         "symfony/orm-pack": "^1.0",
@@ -13,7 +14,6 @@
         "ext-json": "*"
     },
     "require-dev": {
-        "symfony/dotenv": "*",
         "symfony/maker-bundle": "*",
         "symfony/web-server-bundle": "*"
     },

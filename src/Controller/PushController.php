@@ -14,25 +14,32 @@ class PushController extends AbstractController
     /**
      * @Route("/push", name="push", methods={"POST"})
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function index(Request $request)
     {
-        $key = $request->query->get('key');
+        $requestKey = $request->query->get('key');
+        $givenKey = getenv('PUSH_KEY') ?: '~';
 
-        if ($key == null) {
+        if ($givenKey == '~') {
+            return $this->json([
+                'message' => 'Please set the PUSH_KEY in your .env.local file, otherwise it is an security risk!'
+            ], RESPONSE::HTTP_NOT_IMPLEMENTED);
+        }
+
+        if ($requestKey == null) {
             return $this->json([
                 'message' => 'No key is set!'
-            ], 401);
-        } else if ($key !== getenv('PUSH_KEY')) {
+            ], RESPONSE::HTTP_UNAUTHORIZED);
+        } else if ($requestKey !== $givenKey) {
             return $this->json([
                 'message' => 'Wrong key is set!'
-            ], 401);
+            ], RESPONSE::HTTP_UNAUTHORIZED);
         }
 
         $entityManger = $this->getDoctrine()->getManager();
         $mealRepository = $this->getDoctrine()->getRepository(CafeteriaMeal::class);
-        // TODO: Preftech the meals for the days
+        // TODO: Prefetch the meals for the days
 
         $json = json_decode($request->getContent(), true);
 
@@ -116,7 +123,7 @@ class PushController extends AbstractController
                 'full' => $json,
                 'invalid' => $invalidJson
             ]
-        ], 400);
+        ], Response::HTTP_BAD_REQUEST);
     }
 
     /**
@@ -124,10 +131,18 @@ class PushController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function test(Request $request) {
-        $key = $request->query->get('key');
+    public function test(Request $request)
+    {
+        $requestKey = $request->query->get('key');
+        $givenKey = getenv('PUSH_KEY') ?: '~';
 
-        if ($key == getenv('PUSH_KEY')) {
+        if ($givenKey == '~') {
+            return new Response(
+                'Please set the PUSH_KEY in your .env.local file, otherwise it is an security risk!',
+                RESPONSE::HTTP_NOT_IMPLEMENTED);
+        }
+
+        if ($requestKey == $givenKey) {
             return new Response('', Response::HTTP_OK);
         } else {
             return new Response('', Response::HTTP_UNAUTHORIZED);
