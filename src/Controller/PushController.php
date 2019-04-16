@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\CafeteriaMeal;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,9 +15,10 @@ class PushController extends AbstractController
     /**
      * @Route("/push", name="push", methods={"POST"})
      * @param Request $request
+     * @param LoggerInterface $logger
      * @return JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request, LoggerInterface $logger)
     {
         $requestKey = $request->query->get('key');
         $givenKey = getenv('PUSH_KEY') ?: '~';
@@ -47,6 +49,8 @@ class PushController extends AbstractController
             return $this->error('Why there\'s no JSON?', [], []);
         }
 
+        $logger->info('Got request with '.count($json).' meals');
+
         $changes = [];
 
         foreach ($json as $key => $item) {
@@ -72,6 +76,8 @@ class PushController extends AbstractController
             if (!is_bool($vegetarian)) {
                 return $this->error('Vegetarian should be a boolean!', $json, $item);
             }
+
+            $logger->debug(json_encode($item));
 
             $meal = $mealRepository->findOneBy([
                 'day' => $day,
