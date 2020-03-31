@@ -92,6 +92,9 @@
     "psr/container": {
         "version": "1.0.0"
     },
+    "psr/event-dispatcher": {
+        "version": "1.0.0"
+    },
     "psr/log": {
         "version": "1.0.2"
     },
@@ -115,9 +118,6 @@
     },
     "symfony/contracts": {
         "version": "v1.0.2"
-    },
-    "symfony/debug": {
-        "version": "v4.1.6"
     },
     "symfony/dependency-injection": {
         "version": "v4.1.6"

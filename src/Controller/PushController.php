@@ -41,7 +41,6 @@ class PushController extends AbstractController
 
         $entityManger = $this->getDoctrine()->getManager();
         $mealRepository = $this->getDoctrine()->getRepository(CafeteriaMeal::class);
-        // TODO: Prefetch the meals for the days
 
         $json = json_decode($request->getContent(), true);
 
@@ -65,7 +64,6 @@ class PushController extends AbstractController
             $description = $item['description'];
 
             if ($day === null || $vegetarian === null || $price === null || $description === null) {
-                // TODO: Log this
                 return $this->error('Something is null', $json, $item);
             }
 
